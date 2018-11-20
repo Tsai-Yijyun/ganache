@@ -36,11 +36,7 @@ contract Bank {
         emit DepositEvent(msg.sender, msg.value, now);
     }
     
-    /*
-        ##################################
-                    CODE START
-        ##################################
-    */
+    	//code start
     
 	//將cdBalance[msg.sender]設為msg.value，cdPeriod[msg.sender]設為period，返回處理情況、錢數量、時間
     function certificateDeposit(uint256 period) public payable {
