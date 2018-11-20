@@ -64,11 +64,7 @@ contract Bank {
         emit cdWithdrawEvent(msg.sender, weiValue, now);
     }
 
-    /*
-        ##################################
-                    CODE END
-        ##################################
-    */
+    //code end
 
 	// 提錢
 	//獲取要提領的錢數。判斷提領錢是否超過存款，未超過，則提示"your balances are not enough”，若超過，則進行msg.sender.transfer，減去帳戶的餘額，提領金錢，成功返回處理情況、錢數量、時間
