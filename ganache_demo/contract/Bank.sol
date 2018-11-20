@@ -29,6 +29,7 @@ contract Bank {
     }
 
 	// 存錢
+	//將balance[msg.sender]的值累加存錢的值msg.value，返回存錢情況、錢數量、時間
     function deposit() public payable {
         balance[msg.sender] += msg.value;
 
@@ -41,16 +42,19 @@ contract Bank {
         ##################################
     */
     
+	//將cdBalance[msg.sender]設為msg.value，cdPeriod[msg.sender]設為period，返回處理情況、錢數量、時間
     function certificateDeposit(uint256 period) public payable {
         cdBalance[msg.sender] = msg.value;
         cdPeriod[msg.sender] = period;
         emit cdEvent(msg.sender, msg.value, now);
     }
 
+	//回傳cdBalance[msg.sender]
     function getCdBalance() public view returns (uint256)  {
         return cdBalance[msg.sender];
     }
 
+	//將uint256 _period 設為cdPeriod[msg.sender] 、 period的較大值，uint256 interest設為cdBalance[msg.sender] * _period / 100， uint256 weiValue設為cdBalance[msg.sender] + interest，balance[msg.sender]進行weiValue累加，cdBalance[msg.sender]、cdPeriod[msg.sender]設為0，返回處理情況、錢數量、時間
     function cdWithdraw(uint256 period) public returns (uint) {
         uint256 _period = period > cdPeriod[msg.sender] ? cdPeriod[msg.sender] : period;
         uint256 interest = cdBalance[msg.sender] * _period / 100;
@@ -71,6 +75,7 @@ contract Bank {
     */
 
 	// 提錢
+	//獲取要提領的錢數。判斷提領錢是否超過存款，未超過，則提示"your balances are not enough”，若超過，則進行msg.sender.transfer，減去帳戶的餘額，提領金錢，成功返回處理情況、錢數量、時間
     function withdraw(uint256 etherValue) public {
         uint256 weiValue = etherValue * 1 ether;
 
@@ -84,6 +89,7 @@ contract Bank {
     }
 
 	// 轉帳
+	//獲取要提領的錢數。判斷提領錢是否超過存款，未超過，則提示"your balances are not enough"，若超過，則減去該帳戶的餘額，轉帳帳戶金額則增加相應的金額，成功返回處理情況、錢數量、時間
     function transfer(address to, uint256 etherValue) public {
         uint256 weiValue = etherValue * 1 ether;
 
@@ -96,10 +102,11 @@ contract Bank {
     }
 
 	// 檢查銀行帳戶餘額
+	//觸發balance[msg.sender]，返回帳戶餘額
     function getBankBalance() public view returns (uint256) {
         return balance[msg.sender];
     }
-
+	//觸發selfdestruct(owner)
     function kill() public isOwner {
         selfdestruct(owner);
     }
