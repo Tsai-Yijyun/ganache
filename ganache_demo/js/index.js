@@ -35,6 +35,7 @@ let web3 = new Web3(
 
 let bank = new web3.eth.Contract(bankAbi);
 
+// 註釋：log解析，循環判斷輸入的input是否是object，如果是，則進行字串解析，而後將input與logger的返回內容，合併後，返回合併的內容。
 function log(...inputs) {
     for (let input of inputs) {
         if (typeof input === "object") {
@@ -46,6 +47,7 @@ function log(...inputs) {
 
 init();
 
+// 註釋：init，獲取accounts帳單，而後循環將accounts的元素加入whoami，而後以單機觸發update功能，返回log解析後的內容。
 async function init() {
     let accounts = await web3.eth.getAccounts();
 
@@ -59,24 +61,24 @@ async function init() {
     log(accounts, "以太帳戶");
 }
 
-// 當按下載入既有合約位址時
+// 註釋：當按下載入既有合約位址時，點擊loadDeployedContractButton後，將deployedContractAddressInput作為輸入值，觸發loadBank載入bank合約。
 loadDeployedContractButton.on("click", function () {
     loadBank(deployedContractAddressInput.val());
 });
 
-// 當按下部署合約時
+// 註釋：當按下部署合約時，點擊deployNewContractButton後，觸發newBank新增bank合約功能。
 deployNewContractButton.on("click", function () {
     newBank();
 });
 
-// 當按下登入按鍵時
+// 註釋：當按下登入按鍵時，點擊whoamiButton後，獲取當前的帳單狀況，並觸發update更新功能。
 whoamiButton.on("click", function () {
     nowAccount = whoami.val();
 
     update.trigger("click");
 });
 
-// 當按下複製按鍵時
+// 註釋：當按下複製按鍵時，點擊copyButton後，獲取textarea的資料，將資料完成複製。複製結果會回傳。
 copyButton.on("click", function () {
     let textarea = $("<textarea />");
     textarea
@@ -103,7 +105,8 @@ copyButton.on("click", function () {
     return false;
 });
 
-// 當按下更新按鍵時
+// 註釋：當按下更新按鍵時，
+// 點擊update後，判斷bankAddress是否為空，為非空則，將輸入資料（address，ethBalance，bankBalance）進行更新，並將結果呈現；為空，則創建一個新的web3.eth.getBalance，再將結果呈現。
 update.on("click", async function () {
     if (bankAddress != "") {
         let ethBalance = await web3.eth.getBalance(nowAccount);
@@ -128,7 +131,8 @@ update.on("click", async function () {
     }
 });
 
-// 當按下刪除合約按鈕時
+// 註釋：當按下刪除合約按鈕時，
+// 點擊killContractButton後，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將合約進行刪除動作。將bankAddress、contractAddress、deployedContractAddressInput置空，而後更新介面。
 killContractButton.on("click", async function () {
     if (bankAddress == "") {
         return;
@@ -169,11 +173,8 @@ killContractButton.on("click", async function () {
         });
 });
 
-/*
-    ##################################
-                CODE START
-    ##################################
-*/
+//code start
+
 let certificateDeposit = $('#certificateDeposit');
 let certificateDepositBtn = $('#certificateDepositBtn');
 let cdPeriod = $('#certificateDepositPeriod');
@@ -181,6 +182,7 @@ let cdWithdrawEarlyBtn = $('#cdWithdrawEarlyBtn')
 let cdWithdrawBtn = $('#cdWithdrawBtn')
 let cdWithdrawPeriod = $('#cdWithdrawPeriod')
 
+// 註釋：點擊certificateDepositBtn後，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將certificateDeposit資料進行定存修改，成功，則返回“定存成功”，失敗，則報錯“error”。
 certificateDepositBtn.on("click", async function () {
     if (bankAddress == "") {
         return;
@@ -222,6 +224,8 @@ certificateDepositBtn.on("click", async function () {
     });
 });
 
+
+// 註釋：cdWithdraw，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，跟新介面，將輸入值period（period預設為最大整數）導入，取出定存，成功，則返回“取出定存成功”，失敗，則報錯“error”。
 async function cdWithdraw(period = Number.MAX_SAFE_INTEGER) {
     if (bankAddress == "") {
         return;
@@ -252,21 +256,20 @@ async function cdWithdraw(period = Number.MAX_SAFE_INTEGER) {
         });
 }
 
+// 註釋：點擊cdWithdrawBtn，觸法cdWithdraw功能，以預設period執行。
 cdWithdrawBtn.on("click", async function () {
     cdWithdraw();
 });
 
+// 註釋：點擊cdWithdrawEarlyBtn，觸法cdWithdraw功能，以period=cdWithdrawPeriod執行。
 cdWithdrawEarlyBtn.on("click", async function () {
     cdWithdraw(cdWithdrawPeriod.val());
 });
 
-/*
-    ##################################
-                CODE END
-    ##################################
-*/
+//code end
 
-// 當按下存款按鍵時
+// 註釋：當按下存款按鍵時，
+// 點擊depositButton，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將deposit資料進行存款修改，成功，則返回“存款成功”，觸發帳戶資料更新，失敗，則報錯“error”。
 depositButton.on("click", async function () {
     if (bankAddress == "") {
         return;
@@ -307,6 +310,7 @@ depositButton.on("click", async function () {
     });
 });
 
+// 註釋：點擊withdrawButton，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將withdraw資料進行提款修改，成功，則返回“提款成功”，觸發帳戶資料更新，失敗，則報錯“error”。
 withdrawButton.on("click", async function () {
     if (bankAddress == "") {
         return;
@@ -343,7 +347,9 @@ withdrawButton.on("click", async function () {
         });
 });
 
-// 當按下轉帳按鍵時
+
+// 註釋：當按下轉帳按鍵時，
+// 點擊withdrawButton，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將transferEtherValue資料進行提款修改，成功，則返回“提款成功”，觸發帳戶資料更新，失敗，則報錯“error”。
 transferEtherButton.on("click", async function () {
     if (bankAddress == "") {
         return;
@@ -380,7 +386,8 @@ transferEtherButton.on("click", async function () {
         });
 });
 
-// 載入bank合約
+// 註釋：載入bank合約，
+// loadBank，首先判斷輸入值address是否為空，並建立bank，在確定bank非undefined後，載入合約，成功，則回傳“合約位置：”+ address，並觸法更新功能，失敗，則回傳“載入失敗”。
 function loadBank(address) {
     if (!(address === undefined || address === null || address === "")) {
         let bank_temp = new web3.eth.Contract(bankAbi);
@@ -400,7 +407,8 @@ function loadBank(address) {
     }
 }
 
-// 新增bank合約
+// 註釋： 新增bank合約，
+// newBank，如果bankAddress為空，則跳出。為非空，則進行解鎖，若不能解鎖，則跳出。解鎖後，更新介面，將receipt資料進行部署合約，成功，則返回"合約位址:" + receipt.contractAddress，觸發帳戶資料更新。
 async function newBank() {
     // 解鎖
     let unlock = await unlockAccount();
@@ -435,16 +443,19 @@ async function newBank() {
         });
 }
 
+// 註釋：更新介面waitTransactionStatus，解析返回accountStatus的狀態。
 function waitTransactionStatus() {
     $("#accountStatus").html(
         '帳戶狀態 <b style="color: blue">(等待交易驗證中...)</b>'
     );
 }
 
+// 註釋：更新介面doneTransactionStatus，改變accountStatus的帳戶狀態。
 function doneTransactionStatus() {
     $("#accountStatus").text("帳戶狀態");
 }
 
+// 註釋：解鎖unlockAccount，提示使用者”請輸入你的密碼”，待輸入後，判斷輸入是否為空，為空，則跳出。對比使用者輸入的密碼與帳戶的密碼，正確則回傳true，錯誤則提示”密碼錯誤”，並跳出。
 async function unlockAccount() {
     let password = prompt("請輸入你的密碼", "");
     if (password == null) {
